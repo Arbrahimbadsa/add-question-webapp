@@ -6,9 +6,16 @@
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^11.2.7",
     "@testing-library/user-event": "^12.8.3",
+    "iink-js": "^1.4.5",
+    "katex": "^0.13.18",
+    "mathjax": "^3.2.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
+    "react-feather": "^2.0.9",
+    "react-mathjax-preview": "^2.2.3",
+    "react-mathlive": "^3.0.5-preview.1",
     "react-scripts": "4.0.3",
+    "styled-components": "^5.3.1",
     "web-vitals": "^1.1.2"
   },
   "scripts": {

@@ -25,6 +25,17 @@
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
     <title>React App</title>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+      <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+          tex2jax: {
+          inlineMath: [["$","$"],["\\(","\\)"]],
+          displayMath:[["$$", "$$"], ["\\[","\\]"]]
+        },
+          showMathMenu: true,
+          messageStyle: "none"
+        });
+        </script>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
