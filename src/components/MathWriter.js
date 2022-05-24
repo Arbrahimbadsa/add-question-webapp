@@ -3,11 +3,11 @@ import styled from "styled-components";
 import {
   ArrowLeft,
   ArrowRight,
+  Check,
   Copy,
   CornerUpLeft,
   CornerUpRight,
-  Trash2,
-  X,
+  Trash2
 } from "react-feather";
 import * as iink from "iink-js";
 import * as katex from "katex";
@@ -197,7 +197,7 @@ export default function MathWriter({ getLatex, onClose, show }) {
             onClose(latex);
           }}
         >
-          <X size={20} color={"#fff"} />
+          <Check size={20} color={"#fff"} />
         </IconContainer>
       </ControlContainer>
       <EditorContainer ref={editorContainerRef}>

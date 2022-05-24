@@ -9,6 +9,7 @@
     "iink-js": "^1.4.5",
     "katex": "^0.13.18",
     "mathjax": "^3.2.0",
+    "mathlive": "^0.73.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-feather": "^2.0.9",

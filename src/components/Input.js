@@ -25,11 +25,11 @@ const Button = styled.button`
 const InputContainer = styled.div`
   display: flex;
 `;
-const Value = styled.h3`
+const Value = styled.h5`
   margin: 10px;
 `;
 
-export default function Input({ getValue }) {
+export default function Input({ getValue, showValue = true }) {
   const [value, setValue] = useState("");
   const [showMathWriter, setShowMathWriter] = useState(false);
   useEffect(() => {
@@ -63,7 +63,7 @@ export default function Input({ getValue }) {
             }}
           />
         )}
-        <Value>{value}</Value>
+        {showValue && <Value>{value}</Value>}
       </InputHolder>
     </Latex>
   );
