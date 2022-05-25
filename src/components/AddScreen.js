@@ -2,6 +2,7 @@ import { useState, useRef } from "react";
 import styled from "styled-components";
 import Latex from "./Latex";
 import Input from "./Input";
+import {data} from "../data";
 
 const AddScreenContainer = styled.div`
   height: 100vh;
@@ -17,12 +18,12 @@ const AddScreenContainer = styled.div`
 const Container = styled.div`
   background: #fff;
   width: 60%;
+  height: 100%;
   margin: 0 auto;
   padding: 80px 20px;
+  overflow: scroll;
   @media only screen and (max-width: 600px) {
     width: 100%;
-    height: 100%;
-    overflow: scroll;
   }
 `;
 const SubjectContainer = styled.div`
@@ -69,12 +70,9 @@ font: 400 12px/1.3 sans-serif;
 const Option = styled.option`
   height: 45px;
 `;
-
-// const Input = styled.input`
-//   height: 30px;
-//   width: 200px;
-//   margin: 10px 0;
-// `;
+const InfoContainer = styled.div`
+  color: #23BBDC;
+`;
 
 export default function AddScreen({getQuestion}) {
   const [question, setQuestion] = useState("");
@@ -90,27 +88,7 @@ export default function AddScreen({getQuestion}) {
   const [correctIndex, setCorrectIndex] = useState(null);
   const [mainData, setMainData] = useState(null);
   const subjects = ["Math 1st Paper", "Math 2nd Paper", "Physics 1st Paper", "Physics 2nd Paper", "Chemistry 1st Paper", "Chemistry 2nd Paper", "Biology 1st Paper", "Biology 2nd Paper"];
-  
-  const data = {
-    "math_1st_paper": {
-      chapters: [
-        "Matrix",
-        "Straight Line",
-        "Differentiation",
-        "Integration"
-      ]
-    },
-    "physics_1st_paper": {
-      chapters: [
-        "Vector",
-        "Newtonian Mechanics",
-        "Work, force and energy",
-        "Periodic Motion",
-        "Standard Gas"
-      ]
-    }
-  };
-
+  // handling actions
   const handleQuestionSubmit = () => {
     const genQuestionData = {
       text: question,
@@ -123,9 +101,7 @@ export default function AddScreen({getQuestion}) {
     setMainData(genQuestionData);
     alert(JSON.stringify(genQuestionData))
   }
-  //const [correct, setCorrect] = useState("");
-  const keyboardRef = useRef();
-  
+  // content vars
   const addQuestionContent = (
     <>
           <Title>
@@ -135,10 +111,14 @@ export default function AddScreen({getQuestion}) {
             setShowAddChapter(true);
           }}>Back</NextButton>
           <NextButton onClick={handleQuestionSubmit}>Submit</NextButton>
-
           </Title>
-          <div ref={keyboardRef}></div>
-          <Input getValue={(val) => setQuestion(val)} />
+          <InfoContainer>
+            <h4>Subject: {subject && subject}</h4>
+            <h4>Chapter: {chapter && chapter}</h4>
+          </InfoContainer>
+          <Input getValue={(val) => {
+            setQuestion(val);
+          }} />
           {question && (
             <>
               <h4>Option one</h4>
@@ -150,8 +130,8 @@ export default function AddScreen({getQuestion}) {
               <h4>Option four</h4>
               <Input getValue={(val) => setOptionFour(val)} />
               <h4>Correct index</h4>
-              <Input showValue={false} getValue={(val) => setCorrectIndex(Number(val))} />
-              <h5>{JSON.stringify(mainData)}</h5>
+              <Input showValue={false} getValue={(val) => setCorrectIndex(Number(val) - 1)} canDraw={false} placeholder="Enter index i.e. 1,2,3.." type="number" />
+              <h5>{mainData && JSON.stringify(mainData)}</h5>
             </>
           )}
     </>

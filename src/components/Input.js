@@ -29,7 +29,7 @@ const Value = styled.h5`
   margin: 10px;
 `;
 
-export default function Input({ getValue, showValue = true }) {
+export default function Input({ getValue, showValue = true, canDraw = true, placeholder = "Enter a question", ...rest }) {
   const [value, setValue] = useState("");
   const [showMathWriter, setShowMathWriter] = useState(false);
   useEffect(() => {
@@ -41,13 +41,14 @@ export default function Input({ getValue, showValue = true }) {
         {!showMathWriter && (
           <InputContainer>
             <InputMain
-              placeholder="Enter the question"
+              placeholder={placeholder}
               value={value}
               onChange={(e) => setValue(e.target.value)}
+              {...rest}
             />
-            <Button onClick={() => setShowMathWriter(!showMathWriter)}>
+            {canDraw && <Button onClick={() => setShowMathWriter(!showMathWriter)}>
               Draw
-            </Button>
+            </Button>}
           </InputContainer>
         )}
         {showMathWriter && (
