@@ -1,8 +1,12 @@
-import { useState, useRef } from "react";
+import { useState } from "react";
 import styled from "styled-components";
 import Latex from "./Latex";
 import Input from "./Input";
 import {data} from "../data";
+import {getDatabase, ref, set} from "firebase/database";
+import { v4 as uuidv4 } from 'uuid';
+
+const database = getDatabase();
 
 const AddScreenContainer = styled.div`
   height: 100vh;
@@ -90,16 +94,32 @@ export default function AddScreen({getQuestion}) {
   const subjects = ["Math 1st Paper", "Math 2nd Paper", "Physics 1st Paper", "Physics 2nd Paper", "Chemistry 1st Paper", "Chemistry 2nd Paper", "Biology 1st Paper", "Biology 2nd Paper"];
   // handling actions
   const handleQuestionSubmit = () => {
-    const genQuestionData = {
-      text: question,
-      options: [optionOne, optionTwo, optionThree, optionFour],
-      correctIndex: correctIndex,
-      subject: subject,
-      chapter: chapter
-    };
-    console.log(genQuestionData);
-    setMainData(genQuestionData);
-    alert(JSON.stringify(genQuestionData))
+    if (question && optionOne && optionTwo && optionFour && optionThree && subject && chapter && correctIndex) {
+      if (correctIndex > 0 && correctIndex < 5) {
+        const genQuestionData = {
+          text: question,
+          options: [optionOne, optionTwo, optionThree, optionFour],
+          correctIndex: correctIndex - 1,
+          subject: subject,
+          chapter: chapter
+        };
+        const database = getDatabase();
+        const id = uuidv4();
+        set(ref(database, "/question" + id), genQuestionData);
+        setMainData(genQuestionData);
+        alert(JSON.stringify(genQuestionData));
+      }
+    } else {
+      alert("Enter all fields with valid values.");
+    }
+  }
+  const handleClear = () => {
+    setQuestion("");
+    setOptionOne("");
+    setOptionTwo("");
+    setOptionThree("");
+    setOptionFour("");
+    setCorrectIndex(null);
   }
   // content vars
   const addQuestionContent = (
@@ -109,6 +129,7 @@ export default function AddScreen({getQuestion}) {
           <NextButton onClick={() => {
             setShowAddQuestion(false);
             setShowAddChapter(true);
+            handleClear();
           }}>Back</NextButton>
           <NextButton onClick={handleQuestionSubmit}>Submit</NextButton>
           </Title>
@@ -130,7 +151,7 @@ export default function AddScreen({getQuestion}) {
               <h4>Option four</h4>
               <Input getValue={(val) => setOptionFour(val)} />
               <h4>Correct index</h4>
-              <Input showValue={false} getValue={(val) => setCorrectIndex(Number(val) - 1)} canDraw={false} placeholder="Enter index i.e. 1,2,3.." type="number" />
+              <Input showValue={false} getValue={(val) => setCorrectIndex(Number(val))} canDraw={false} placeholder="Enter index i.e. 1,2,3.." type="number" />
               <h5>{mainData && JSON.stringify(mainData)}</h5>
             </>
           )}
