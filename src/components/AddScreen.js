@@ -5,9 +5,6 @@ import Input from "./Input";
 import {data} from "../data";
 import {getDatabase, ref, set} from "firebase/database";
 import { v4 as uuidv4 } from 'uuid';
-
-const database = getDatabase();
-
 const AddScreenContainer = styled.div`
   height: 100vh;
   width: 100vw;
