@@ -47,9 +47,9 @@ export default function Input({
   const inputRef = useRef();
   useEffect(() => {
     if (inputRef && doFocus) {
-      inputRef.current.focus();
+      inputRef.current?.focus();
     }
-  }, [doFocus]);
+  }, [doFocus, showMathWriter]);
   return (
     <Latex>
       <InputHolder>
