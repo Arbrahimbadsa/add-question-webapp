@@ -21,7 +21,7 @@ const Container = styled.div`
   width: 60%;
   height: 100%;
   margin: 0 auto;
-  padding: 80px 20px;
+  padding: 20px 20px 80px 20px;
   overflow: scroll;
   @media only screen and (max-width: 600px) {
     width: 100%;
@@ -81,6 +81,12 @@ const ButtonContainer = styled.div`
   justify-content: space-evenly;
   align-items: center;
   margin-top: 20px;
+`;
+const Header = styled.div``;
+const SiteTitle = styled.h2`
+  border-bottom: 5px solid #23bbdc;
+  margin-bottom: 30px;
+  padding-bottom: 5px;
 `;
 
 export default function AddScreen({ getQuestion }) {
@@ -153,7 +159,7 @@ export default function AddScreen({ getQuestion }) {
   const addQuestionContent = (
     <>
       <Title>
-        <h4>Add Question</h4>
+        <h4>Submit Question</h4>
         <NextButton onClick={handleClear}>Clear</NextButton>
       </Title>
       <InfoContainer>
@@ -167,6 +173,7 @@ export default function AddScreen({ getQuestion }) {
         inputVal={question}
         setInputValue={setQuestion}
         onChange={(e) => setQuestion(e.target.value)}
+        placeholder="Write question or draw expression"
         doFocus
       />
       {question && (
@@ -262,6 +269,9 @@ export default function AddScreen({ getQuestion }) {
     <Latex>
       <AddScreenContainer>
         <Container>
+          <Header>
+            <SiteTitle>Add Question V.1.0</SiteTitle>
+          </Header>
           {showAddQuestion && addQuestionContent}
           {showAddSubject && addSubjectContent}
           {showAddChapter && addChapterContent}
