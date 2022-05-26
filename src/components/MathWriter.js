@@ -7,7 +7,7 @@ import {
   Copy,
   CornerUpLeft,
   CornerUpRight,
-  Trash2
+  Trash2,
 } from "react-feather";
 import * as iink from "iink-js";
 import * as katex from "katex";
@@ -47,7 +47,7 @@ const IconContainer = styled.div`
   justify-content: center;
   align-items: center;
   color: #fff;
-  background: black;
+  background: #23bbdc;
   margin-right: 10px;
   padding: 8px;
   cursor: pointer;

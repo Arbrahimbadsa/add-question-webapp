@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import styled from "styled-components";
 import MathWriter from "./MathWriter";
 import Latex from "./Latex";
+import { PenTool } from "react-feather";
 const InputHolder = styled.div`
   margin: 10px 0;
 `;
@@ -12,15 +13,18 @@ const InputMain = styled.input`
   border: none;
   background: #eee;
   font-size: 15px;
+  &:focus {
+    outline-color: #23bbdc;
+  }
 `;
 const Button = styled.button`
   height: auto;
-  width: 100px;
+  width: auto;
   margin-left: 10px;
   border: none;
-  background: #eee;
+  background: #23bbdc;
   cursor: pointer;
-  padding: 5px;
+  padding: 10px 15px;
 `;
 const InputContainer = styled.div`
   display: flex;
@@ -36,18 +40,25 @@ export default function Input({
   placeholder = "Enter a question",
   inputVal,
   setInputValue,
+  doFocus = false,
   ...rest
 }) {
   const [showMathWriter, setShowMathWriter] = useState(false);
+  const inputRef = useRef();
+  useEffect(() => {
+    if (inputRef && doFocus) {
+      inputRef.current.focus();
+    }
+  }, [doFocus]);
   return (
     <Latex>
       <InputHolder>
         {!showMathWriter && (
           <InputContainer>
-            <InputMain placeholder={placeholder} {...rest} />
+            <InputMain ref={inputRef} placeholder={placeholder} {...rest} />
             {canDraw && (
               <Button onClick={() => setShowMathWriter(!showMathWriter)}>
-                Draw
+                <PenTool size={20} color="white" />
               </Button>
             )}
           </InputContainer>

@@ -74,6 +74,7 @@ const Option = styled.option`
 `;
 const InfoContainer = styled.div`
   color: #23bbdc;
+  margin: 20px 0;
 `;
 const ButtonContainer = styled.div`
   display: flex;
@@ -152,52 +153,52 @@ export default function AddScreen({ getQuestion }) {
   const addQuestionContent = (
     <>
       <Title>
-        <h4>Enter a question</h4>
-        <NextButton
-          onClick={() => {
-            setShowAddQuestion(false);
-            setShowAddChapter(true);
-          }}
-        >
-          Back
-        </NextButton>
+        <h4>Add Question</h4>
+        <NextButton onClick={handleClear}>Clear</NextButton>
       </Title>
       <InfoContainer>
-        <h4>Subject: {subject && subject}</h4>
-        <h4>Chapter: {chapter && chapter}</h4>
+        <h4>Subject: {subject && data[subject].name.toUpperCase()}</h4>
+        <h4>
+          Chapter: {chapter && chapter.split("_").join(" ").toUpperCase()}
+        </h4>
       </InfoContainer>
       <Input
         value={question}
         inputVal={question}
         setInputValue={setQuestion}
         onChange={(e) => setQuestion(e.target.value)}
+        doFocus
       />
       {question && (
         <>
-          <h4>Option one</h4>
+          <h4>1.</h4>
           <Input
             value={optionOne}
+            placeholder="Enter option one"
             inputVal={optionOne}
             setInputValue={setOptionOne}
             onChange={(e) => setOptionOne(e.target.value)}
           />
-          <h4>Option two</h4>
+          <h4>2.</h4>
           <Input
             value={optionTwo}
+            placeholder="Enter option two"
             inputVal={optionTwo}
             setInputValue={setOptionTwo}
             onChange={(e) => setOptionTwo(e.target.value)}
           />
-          <h4>Option three</h4>
+          <h4>3.</h4>
           <Input
             value={optionThree}
+            placeholder="Enter option three"
             inputVal={optionThree}
             setInputValue={setOptionThree}
             onChange={(e) => setOptionThree(e.target.value)}
           />
-          <h4>Option four</h4>
+          <h4>4.</h4>
           <Input
             value={optionFour}
+            placeholder="Enter option four"
             inputVal={optionFour}
             setInputValue={setOptionFour}
             onChange={(e) => setOptionFour(e.target.value)}
@@ -218,7 +219,14 @@ export default function AddScreen({ getQuestion }) {
         </>
       )}
       <ButtonContainer>
-        <NextButton onClick={handleClear}>Clear</NextButton>
+        <NextButton
+          onClick={() => {
+            setShowAddQuestion(false);
+            setShowAddChapter(true);
+          }}
+        >
+          Back
+        </NextButton>
         <NextButton onClick={handleQuestionSubmit}>Submit</NextButton>
       </ButtonContainer>
     </>
