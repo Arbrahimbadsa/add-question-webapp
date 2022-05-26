@@ -2,9 +2,9 @@ import { useState } from "react";
 import styled from "styled-components";
 import Latex from "./Latex";
 import Input from "./Input";
-import {data} from "../data";
-import {getDatabase, ref, set} from "firebase/database";
-import { v4 as uuidv4 } from 'uuid';
+import { data } from "../data";
+import { getDatabase, ref, set } from "firebase/database";
+import { v4 as uuidv4 } from "uuid";
 const AddScreenContainer = styled.div`
   height: 100vh;
   width: 100vw;
@@ -33,20 +33,20 @@ const SubjectContainer = styled.div`
 const Title = styled.div`
   display: flex;
   justify-content: space-between;
-  color: #23BBDC;
+  color: #23bbdc;
   align-items: center;
 `;
 const NextButton = styled.button`
   height: auto;
   width: auto;
   padding: 10px 15px;
-  background: #23BBDC;
+  background: #23bbdc;
   color: white;
   border: none;
   border-radius: 5px;
-`
+`;
 const Select = styled.select`
-font: 400 12px/1.3 sans-serif;
+  font: 400 12px/1.3 sans-serif;
   -webkit-appearance: none;
   appearance: none;
   color: var(--baseFg);
@@ -62,9 +62,10 @@ font: 400 12px/1.3 sans-serif;
     linear-gradient(var(--accentBg) 42%, var(--accentFg) 42%);
   background-repeat: no-repeat, no-repeat, no-repeat, no-repeat;
   background-size: 1px 100%, 20px 22px, 20px 22px, 20px 100%;
-  background-position: right 20px center, right bottom, right bottom, right bottom; 
+  background-position: right 20px center, right bottom, right bottom,
+    right bottom;
   width: 100%;
-  background: #23BBDC;
+  background: #23bbdc;
   color: #fff;
   font-size: 15px;
 `;
@@ -72,10 +73,16 @@ const Option = styled.option`
   height: 45px;
 `;
 const InfoContainer = styled.div`
-  color: #23BBDC;
+  color: #23bbdc;
+`;
+const ButtonContainer = styled.div`
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  margin-top: 20px;
 `;
 
-export default function AddScreen({getQuestion}) {
+export default function AddScreen({ getQuestion }) {
   const [question, setQuestion] = useState("");
   const [optionOne, setOptionOne] = useState("");
   const [optionTwo, setOptionTwo] = useState("");
@@ -86,30 +93,52 @@ export default function AddScreen({getQuestion}) {
   const [showAddChapter, setShowAddChapter] = useState(false);
   const [subject, setSubject] = useState("math_1st_paper");
   const [chapter, setChapter] = useState("");
-  const [correctIndex, setCorrectIndex] = useState(null);
+  const [correctIndex, setCorrectIndex] = useState("");
   const [mainData, setMainData] = useState(null);
-  const subjects = ["Math 1st Paper", "Math 2nd Paper", "Physics 1st Paper", "Physics 2nd Paper", "Chemistry 1st Paper", "Chemistry 2nd Paper", "Biology 1st Paper", "Biology 2nd Paper"];
+  const subjects = [
+    "Math 1st Paper",
+    "Math 2nd Paper",
+    "Physics 1st Paper",
+    "Physics 2nd Paper",
+    "Chemistry 1st Paper",
+    "Chemistry 2nd Paper",
+    "Biology 1st Paper",
+    "Biology 2nd Paper",
+  ];
   // handling actions
   const handleQuestionSubmit = () => {
-    if (question && optionOne && optionTwo && optionFour && optionThree && subject && chapter && correctIndex) {
-      if (correctIndex > 0 && correctIndex < 5) {
+    if (
+      question &&
+      optionOne &&
+      optionTwo &&
+      optionFour &&
+      optionThree &&
+      subject &&
+      chapter &&
+      correctIndex
+    ) {
+      const answerIndex = Number(correctIndex);
+      if (answerIndex > 0 && answerIndex < 5) {
         const genQuestionData = {
           text: question,
           options: [optionOne, optionTwo, optionThree, optionFour],
-          correctIndex: correctIndex - 1,
+          correctIndex: answerIndex - 1,
           subject: subject,
-          chapter: chapter
+          chapter: chapter,
         };
         const database = getDatabase();
         const id = uuidv4();
         set(ref(database, "/question" + id), genQuestionData);
         setMainData(genQuestionData);
         alert(JSON.stringify(genQuestionData));
+        handleClear();
+      } else {
+        alert("Incorrect index. Must be between 1 to 4.");
       }
     } else {
       alert("Enter all fields with valid values.");
     }
-  }
+  };
   const handleClear = () => {
     setQuestion("");
     setOptionOne("");
@@ -117,64 +146,108 @@ export default function AddScreen({getQuestion}) {
     setOptionThree("");
     setOptionFour("");
     setCorrectIndex(null);
-  }
+    setMainData(null);
+  };
   // content vars
   const addQuestionContent = (
     <>
-          <Title>
-          <h4>Enter a question</h4>
-          <NextButton onClick={() => {
+      <Title>
+        <h4>Enter a question</h4>
+        <NextButton
+          onClick={() => {
             setShowAddQuestion(false);
             setShowAddChapter(true);
-            handleClear();
-          }}>Back</NextButton>
-          <NextButton onClick={handleQuestionSubmit}>Submit</NextButton>
-          </Title>
-          <InfoContainer>
-            <h4>Subject: {subject && subject}</h4>
-            <h4>Chapter: {chapter && chapter}</h4>
-          </InfoContainer>
-          <Input getValue={(val) => {
-            setQuestion(val);
-          }} />
-          {question && (
-            <>
-              <h4>Option one</h4>
-              <Input getValue={(val) => setOptionOne(val)} />
-              <h4>Option two</h4>
-              <Input getValue={(val) => setOptionTwo(val)} />
-              <h4>Option three</h4>
-              <Input getValue={(val) => setOptionThree(val)} />
-              <h4>Option four</h4>
-              <Input getValue={(val) => setOptionFour(val)} />
-              <h4>Correct index</h4>
-              <Input showValue={false} getValue={(val) => setCorrectIndex(Number(val))} canDraw={false} placeholder="Enter index i.e. 1,2,3.." type="number" />
-              <h5>{mainData && JSON.stringify(mainData)}</h5>
-            </>
-          )}
+          }}
+        >
+          Back
+        </NextButton>
+      </Title>
+      <InfoContainer>
+        <h4>Subject: {subject && subject}</h4>
+        <h4>Chapter: {chapter && chapter}</h4>
+      </InfoContainer>
+      <Input
+        value={question}
+        inputVal={question}
+        setInputValue={setQuestion}
+        onChange={(e) => setQuestion(e.target.value)}
+      />
+      {question && (
+        <>
+          <h4>Option one</h4>
+          <Input
+            value={optionOne}
+            inputVal={optionOne}
+            setInputValue={setOptionOne}
+            onChange={(e) => setOptionOne(e.target.value)}
+          />
+          <h4>Option two</h4>
+          <Input
+            value={optionTwo}
+            inputVal={optionTwo}
+            setInputValue={setOptionTwo}
+            onChange={(e) => setOptionTwo(e.target.value)}
+          />
+          <h4>Option three</h4>
+          <Input
+            value={optionThree}
+            inputVal={optionThree}
+            setInputValue={setOptionThree}
+            onChange={(e) => setOptionThree(e.target.value)}
+          />
+          <h4>Option four</h4>
+          <Input
+            value={optionFour}
+            inputVal={optionFour}
+            setInputValue={setOptionFour}
+            onChange={(e) => setOptionFour(e.target.value)}
+          />
+          <h4>Correct index</h4>
+          <Input
+            showValue={false}
+            value={correctIndex}
+            inputVal={correctIndex}
+            setInputValue={setCorrectIndex}
+            onChange={(e) => setCorrectIndex(e.target.value)}
+            canDraw={false}
+            placeholder="Enter index i.e. 1,2,3.."
+            type="number"
+          />
+
+          <h5>{mainData && JSON.stringify(mainData)}</h5>
+        </>
+      )}
+      <ButtonContainer>
+        <NextButton onClick={handleClear}>Clear</NextButton>
+        <NextButton onClick={handleQuestionSubmit}>Submit</NextButton>
+      </ButtonContainer>
     </>
   );
   const addSubjectContent = (
-      <Add callback={() => {
+    <Add
+      callback={() => {
         setShowAddSubject(false);
         setShowAddChapter(true);
-      }} options={subjects}
-        title="Choose a subject"
-        onNext={val => setSubject(val)} 
-        />
+      }}
+      options={subjects}
+      title="Choose a subject"
+      onNext={(val) => setSubject(val)}
+    />
   );
   const addChapterContent = (
-    <Add callback={() => {
-      setShowAddChapter(false);
-      setShowAddQuestion(true);
-    }} options={data[subject].chapters} 
-    title="Choose a chapter" 
-    onNext={val => setChapter(val)} 
-    backBtnExists 
-    onBack={() => {
-      setShowAddChapter(false);
-      setShowAddSubject(true);
-    }}
+    <Add
+      callback={() => {
+        setShowAddChapter(false);
+        setShowAddQuestion(true);
+      }}
+      options={data[subject].chapters}
+      title="Choose a chapter"
+      onNext={(val) => setChapter(val)}
+      backBtnExists
+      onBack={() => {
+        setShowAddChapter(false);
+        setShowAddSubject(true);
+      }}
     />
   );
   return (
@@ -190,32 +263,52 @@ export default function AddScreen({getQuestion}) {
   );
 }
 
-const Add = ({onNext, callback, options, title, buttonText = "Next", backBtnExists, onBack}) => {
-  const [val, setVal] = useState(options && options[0].toLowerCase().split(" ").join("_"));
+const Add = ({
+  onNext,
+  callback,
+  options,
+  title,
+  buttonText = "Next",
+  backBtnExists,
+  onBack,
+}) => {
+  const [val, setVal] = useState(
+    options && options[0].toLowerCase().split(" ").join("_")
+  );
   return (
-    <form onKeyDown={e => {
-      if (e.keyCode === 13) {
+    <form
+      onKeyDown={(e) => {
+        if (e.keyCode === 13) {
+          onNext(val);
+          callback();
+        }
+      }}
+      onSubmit={(e) => {
+        e.preventDefault();
+        console.log(val);
         onNext(val);
         callback();
-      }
-    }}
-    onSubmit={(e) => {
-      e.preventDefault();
-      console.log(val);
-      onNext(val);
-      callback();
-    }}
+      }}
     >
       <Title>
         <h4>{title}</h4>
-        {backBtnExists && <NextButton type="button" onClick={onBack}>Back</NextButton>}
+        {backBtnExists && (
+          <NextButton type="button" onClick={onBack}>
+            Back
+          </NextButton>
+        )}
         <NextButton type="submit">{buttonText}</NextButton>
       </Title>
       <SubjectContainer>
-          <Select onChange={e => setVal(e.target.value.split(" ").join("_"))}>
-            {options && options.map((sub, i) => <Option key={i} value={sub.toLowerCase()}>{sub}</Option>)}
-          </Select>
+        <Select onChange={(e) => setVal(e.target.value.split(" ").join("_"))}>
+          {options &&
+            options.map((sub, i) => (
+              <Option key={i} value={sub.toLowerCase()}>
+                {sub}
+              </Option>
+            ))}
+        </Select>
       </SubjectContainer>
     </form>
   );
-}
+};

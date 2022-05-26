@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import styled from "styled-components";
 import MathWriter from "./MathWriter";
 import Latex from "./Latex";
@@ -29,26 +29,27 @@ const Value = styled.h5`
   margin: 10px;
 `;
 
-export default function Input({ getValue, showValue = true, canDraw = true, placeholder = "Enter a question", ...rest }) {
-  const [value, setValue] = useState("");
+export default function Input({
+  getValue,
+  showValue = true,
+  canDraw = true,
+  placeholder = "Enter a question",
+  inputVal,
+  setInputValue,
+  ...rest
+}) {
   const [showMathWriter, setShowMathWriter] = useState(false);
-  useEffect(() => {
-    if (value) getValue(value);
-  }, [value, getValue]);
   return (
     <Latex>
       <InputHolder>
         {!showMathWriter && (
           <InputContainer>
-            <InputMain
-              placeholder={placeholder}
-              value={value}
-              onChange={(e) => setValue(e.target.value)}
-              {...rest}
-            />
-            {canDraw && <Button onClick={() => setShowMathWriter(!showMathWriter)}>
-              Draw
-            </Button>}
+            <InputMain placeholder={placeholder} {...rest} />
+            {canDraw && (
+              <Button onClick={() => setShowMathWriter(!showMathWriter)}>
+                Draw
+              </Button>
+            )}
           </InputContainer>
         )}
         {showMathWriter && (
@@ -58,13 +59,13 @@ export default function Input({ getValue, showValue = true, canDraw = true, plac
             onClose={(latex) => {
               setShowMathWriter(false);
               if (latex) {
-                const val = value + " $" + latex + "$ ";
-                setValue(val);
+                const val = inputVal + " $" + latex + "$ ";
+                setInputValue(val);
               }
             }}
           />
         )}
-        {showValue && <Value>{value}</Value>}
+        {showValue && <Value>{inputVal}</Value>}
       </InputHolder>
     </Latex>
   );
