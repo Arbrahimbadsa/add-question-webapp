@@ -16,11 +16,20 @@ const MathWriterContainer = styled.div`
   height: 100vh;
   width: 100vw;
   display: flex;
+  ${(props) =>
+    props.show
+      ? `
+    opacity: 1;
+    z-index: 999;
+  `
+      : `
+    opacity: 0;
+    z-index: -10;
+  `}
   flex-direction: column;
   position: absolute;
   top: 0;
   left: 0;
-  z-index: 999;
   background: #fff;
 `;
 const Output = styled.div`
@@ -137,7 +146,7 @@ export default function MathWriter({ getLatex, onClose, show }) {
     setEditor(edtr);
   }, []);
   return (
-    <MathWriterContainer>
+    <MathWriterContainer show={show}>
       <Output>
         <OutputText ref={outputText}></OutputText>
       </Output>
@@ -195,6 +204,10 @@ export default function MathWriter({ getLatex, onClose, show }) {
         <IconContainer
           onClick={() => {
             onClose(latex);
+            if (canDelete) {
+              setLatex("");
+              editor.clear();
+            }
           }}
         >
           <Check size={20} color={"#fff"} />

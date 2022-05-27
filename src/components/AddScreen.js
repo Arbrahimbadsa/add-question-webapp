@@ -303,7 +303,6 @@ const Add = ({
       }}
       onSubmit={(e) => {
         e.preventDefault();
-        console.log(val);
         onNext(val);
         callback();
       }}

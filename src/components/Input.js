@@ -46,36 +46,32 @@ export default function Input({
   const [showMathWriter, setShowMathWriter] = useState(false);
   const inputRef = useRef();
   useEffect(() => {
-    if (inputRef && doFocus) {
+    if (inputRef && doFocus && !showMathWriter) {
       inputRef.current?.focus();
     }
   }, [doFocus, showMathWriter]);
   return (
     <Latex>
       <InputHolder>
-        {!showMathWriter && (
-          <InputContainer>
-            <InputMain ref={inputRef} placeholder={placeholder} {...rest} />
-            {canDraw && (
-              <Button onClick={() => setShowMathWriter(!showMathWriter)}>
-                <PenTool size={20} color="white" />
-              </Button>
-            )}
-          </InputContainer>
-        )}
-        {showMathWriter && (
-          <MathWriter
-            getLatex={(latex) => null}
-            show={showMathWriter}
-            onClose={(latex) => {
-              setShowMathWriter(false);
-              if (latex) {
-                const val = inputVal + " $" + latex + "$ ";
-                setInputValue(val);
-              }
-            }}
-          />
-        )}
+        <InputContainer>
+          <InputMain ref={inputRef} placeholder={placeholder} {...rest} />
+          {canDraw && (
+            <Button onClick={() => setShowMathWriter(!showMathWriter)}>
+              <PenTool size={20} color="white" />
+            </Button>
+          )}
+        </InputContainer>
+        <MathWriter
+          getLatex={(latex) => null}
+          show={showMathWriter}
+          onClose={(latex) => {
+            setShowMathWriter(false);
+            if (latex) {
+              const val = inputVal + " $" + latex + "$ ";
+              setInputValue(val);
+            }
+          }}
+        />
         {showValue && <Value>{inputVal}</Value>}
       </InputHolder>
     </Latex>
