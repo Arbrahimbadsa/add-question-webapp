@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import styled from "styled-components";
 import MathWriter from "./MathWriter";
 import Latex from "./Latex";
-import { PenTool, Image } from "react-feather";
+import { PenTool, Image, X } from "react-feather";
 const InputHolder = styled.div`
   margin: 10px 0;
 `;
@@ -49,10 +49,11 @@ const ImageInput = styled.input`
 const PreviewContainer = styled.div`
   display: flex;
   justify-content: center;
-  margin-top: 10px;
+  margin-top: 20px;
 `;
 const PreveiwImage = styled.div`
   background-image: url(${(props) => props.src});
+  position: relative;
   background-size: cover;
   ${(props) =>
     props.src
@@ -65,6 +66,20 @@ const PreveiwImage = styled.div`
   width: 0;
   `}
 `;
+const DeleteHolder = styled.div`
+  position: absolute;
+  top: calc(-35px / 4);
+  right: calc(-35px / 4);
+  height: 35px;
+  width: 35px;
+  border-radius: 50%;
+  background: #23bbdc;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+`;
 
 export default function Input({
   getValue,
@@ -74,7 +89,7 @@ export default function Input({
   inputVal,
   setInputValue,
   doFocus = false,
-  getImage = () => {},
+  getImage,
   showImagePreview = true,
   ...rest
 }) {
@@ -82,6 +97,10 @@ export default function Input({
   const inputRef = useRef();
   const [image, setImage] = useState(null);
   const [previewUrl, setPerviewUrl] = useState(null);
+  const clearImage = () => {
+    setPerviewUrl("");
+    setImage(null);
+  };
   useEffect(() => {
     if (inputRef && doFocus && !showMathWriter) {
       inputRef.current?.focus();
@@ -117,6 +136,7 @@ export default function Input({
                 accept="image/*"
                 onChange={handleImageUpload}
                 type="file"
+                capture="environment"
               />
               <Image color="white" size={20} />
             </Button>
@@ -133,9 +153,15 @@ export default function Input({
             }
           }}
         />
-        <PreviewContainer>
-          <PreveiwImage alt="" src={previewUrl} />
-        </PreviewContainer>
+        {previewUrl && (
+          <PreviewContainer>
+            <PreveiwImage src={previewUrl}>
+              <DeleteHolder onClick={clearImage}>
+                <X color="white" size={18} />
+              </DeleteHolder>
+            </PreveiwImage>
+          </PreviewContainer>
+        )}
         {showValue && <Value>{inputVal}</Value>}
       </InputHolder>
     </Latex>

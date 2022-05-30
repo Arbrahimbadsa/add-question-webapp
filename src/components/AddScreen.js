@@ -90,20 +90,6 @@ const SiteTitle = styled.h2`
   padding-bottom: 5px;
 `;
 
-const imageToBlob = (image) => {
-  return new Promise((resolve, reject) => {
-    try {
-      const reader = new FileReader();
-      reader.onload = () => {
-        resolve(reader.result);
-      };
-      reader.readAsDataURL(image);
-    } catch (err) {
-      reject(err);
-    }
-  });
-};
-
 export default function AddScreen({ getQuestion }) {
   const [question, setQuestion] = useState("");
   const [optionOne, setOptionOne] = useState("");
@@ -117,8 +103,12 @@ export default function AddScreen({ getQuestion }) {
   const [chapter, setChapter] = useState("");
   const [correctIndex, setCorrectIndex] = useState("");
   const [mainData, setMainData] = useState(null);
-  const [uploadedImage, setUploadedImage] = useState(null);
-  const [previewUrl, setPerviewUrl] = useState("");
+  const [questionImage, setQuestionImage] = useState(null);
+  const [image1, setImage1] = useState(null);
+  const [image2, setImage2] = useState(null);
+  const [image3, setImage3] = useState(null);
+  const [image4, setImage4] = useState(null);
+
   const subjects = [
     "Math 1st Paper",
     "Math 2nd Paper",
@@ -129,6 +119,22 @@ export default function AddScreen({ getQuestion }) {
     "Biology 1st Paper",
     "Biology 2nd Paper",
   ];
+  const saveImages = () => {
+    const images = [questionImage, image1, image2, image3, image4];
+    const storage = getStorage();
+    images.forEach((img) => {
+      if (img) {
+        const imagesRef = storageRef(storage, "questionImages/" + img.name);
+        // image data
+        const blob = img;
+        uploadBytes(imagesRef, blob)
+          .then((snapshot) => {
+            console.log("Images uploaded successfully.");
+          })
+          .catch((err) => console.log(err));
+      }
+    });
+  };
   // handling actions
   const handleQuestionSubmit = () => {
     if (
@@ -143,9 +149,26 @@ export default function AddScreen({ getQuestion }) {
     ) {
       const answerIndex = Number(correctIndex);
       if (answerIndex > 0 && answerIndex < 5) {
+        const o1 = {
+          text: optionOne,
+          imageUrl: image1 ? image1.name : "",
+        };
+        const o2 = {
+          text: optionTwo,
+          imageUrl: image2 ? image2.name : "",
+        };
+        const o3 = {
+          text: optionThree,
+          imageUrl: image3 ? image3.name : "",
+        };
+        const o4 = {
+          text: optionFour,
+          imageUrl: image4 ? image4.name : "",
+        };
         const genQuestionData = {
           text: question,
-          options: [optionOne, optionTwo, optionThree, optionFour],
+          imageUrl: questionImage ? questionImage.name : "",
+          options: [o1, o2, o3, o4],
           correctIndex: answerIndex - 1,
           subject: subject,
           chapter: chapter,
@@ -155,6 +178,9 @@ export default function AddScreen({ getQuestion }) {
         set(ref(database, "/question" + id), genQuestionData);
         setMainData(genQuestionData);
         alert(JSON.stringify(genQuestionData));
+        console.log(JSON.stringify(genQuestionData));
+        // save images
+        saveImages();
         handleClear();
       } else {
         alert("Incorrect index. Must be between 1 to 4.");
@@ -173,28 +199,8 @@ export default function AddScreen({ getQuestion }) {
     setMainData(null);
   };
   useEffect(() => {
-    if (uploadedImage) {
-      imageToBlob(uploadedImage).then((blob) => {
-        setPerviewUrl(blob);
-      });
-    }
-  }, [uploadedImage]);
-  const handleImageUpload = () => {
-    const storage = getStorage();
-    const imagesRef = storageRef(
-      storage,
-      "questionImages/" + uploadedImage.name
-    );
-    if (uploadedImage) {
-      // image data
-      const blob = uploadedImage;
-      uploadBytes(imagesRef, blob)
-        .then((snapshot) => {
-          console.log("Images uploaded successfully.");
-        })
-        .catch((err) => console.log(err));
-    }
-  };
+    console.log(questionImage);
+  }, [questionImage]);
   // content vars
   const addQuestionContent = (
     <>
@@ -214,7 +220,7 @@ export default function AddScreen({ getQuestion }) {
         setInputValue={setQuestion}
         onChange={(e) => setQuestion(e.target.value)}
         placeholder="Write question or draw expression"
-        getImage={(img) => setUploadedImage(img)}
+        getImage={(img) => setQuestionImage(img)}
       />
       {question && (
         <>
@@ -225,6 +231,7 @@ export default function AddScreen({ getQuestion }) {
             inputVal={optionOne}
             setInputValue={setOptionOne}
             onChange={(e) => setOptionOne(e.target.value)}
+            getImage={(img) => setImage1(img)}
           />
           <h4>2.</h4>
           <Input
@@ -233,6 +240,7 @@ export default function AddScreen({ getQuestion }) {
             inputVal={optionTwo}
             setInputValue={setOptionTwo}
             onChange={(e) => setOptionTwo(e.target.value)}
+            getImage={(img) => setImage2(img)}
           />
           <h4>3.</h4>
           <Input
@@ -241,6 +249,7 @@ export default function AddScreen({ getQuestion }) {
             inputVal={optionThree}
             setInputValue={setOptionThree}
             onChange={(e) => setOptionThree(e.target.value)}
+            getImage={(img) => setImage3(img)}
           />
           <h4>4.</h4>
           <Input
@@ -249,6 +258,7 @@ export default function AddScreen({ getQuestion }) {
             inputVal={optionFour}
             setInputValue={setOptionFour}
             onChange={(e) => setOptionFour(e.target.value)}
+            getImage={(img) => setImage4(img)}
           />
           <h4>Correct index</h4>
           <Input
@@ -311,7 +321,7 @@ export default function AddScreen({ getQuestion }) {
       <AddScreenContainer>
         <Container>
           <Header>
-            <SiteTitle>Add Question V.1.0</SiteTitle>
+            <SiteTitle>Add Question V.1.5</SiteTitle>
           </Header>
           {showAddQuestion && addQuestionContent}
           {showAddSubject && addSubjectContent}
